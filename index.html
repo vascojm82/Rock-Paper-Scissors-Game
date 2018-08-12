@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Rock Paper Scissors</title>
+  <style>
+	.heading{
+	  text-align: center;
+	  margin-bottom: 50px;
+	}
+	.main-container{
+		display: block;
+		width: 35%;
+		margin: auto;
+		padding-bottom:50px;
+	}
+	.row-container{
+		width: 63%;
+		margin: auto;
+	}
+    .user-win{
+      display: none;
+    }
+    .CPU-win{
+      display: none;
+    }
+    .none-win{
+      display: none;
+    }
+    .user-choice-container{
+      display: inline-block;
+    }
+    .CPU-choice-container{
+      display: inline-block;
+    }
+	.user-choice-container h2, .CPU-choice-container h2{
+	  text-align: center;
+	}
+    .chosen{
+      opacity: 1;
+    }
+    .choice-none{
+      opacity: 0.5;
+    }
+    .decision-container{
+      width: 100%;
+    }
+    .decision-container h2{
+      text-align: center;
+    }
+	img{
+	  width: 90%;
+	}
+	
+	/*** MEDIA QUERIES ***/
+	
+	@media only screen and (max-width: 1530px){
+	  .row-container {
+		width: 63%;
+	   }
+	}
+	
+	@media only screen and (max-width: 1522px){
+	  .row-container {
+		width: 75%;
+	   }
+	}
+	
+	@media only screen and (max-width: 1281px){
+	  .row-container {
+		width: 75%;
+	   }
+	}
+	
+	@media only screen and (max-width: 1025px){
+	  .row-container {
+		width: 93%;
+	   }
+	}
+	
+	@media only screen and (max-width: 980px){
+	  .row-container {
+		width: 123%;
+	   }
+	}
+	
+	
+	@media only screen and (max-width: 700px) {
+	  .row-container {
+		width: 93%;
+	   }
+	}
+	
+	@media only screen and (max-width: 300px) {
+	  .row-container {
+		width: 100%;
+	   }
+	}
+	
+	/***************/
+  </style>
+  <script type="text/javascript">
+    var CPU_CHOICE = 0;
+
+    function decision_message(winner){
+       if(winner === "user"){
+          document.getElementsByClassName("user-win")[0].style.cssText = "display: block;";
+          document.getElementsByClassName("CPU-win")[0].style.cssText = "display: none;";
+          document.getElementsByClassName("none-win")[0].style.cssText = "display: none;";
+       }else if(winner === "CPU"){
+          document.getElementsByClassName("CPU-win")[0].style.cssText = "display: block;";
+          document.getElementsByClassName("user-win")[0].style.cssText = "display: none;";
+          document.getElementsByClassName("none-win")[0].style.cssText = "display: none;";
+       }else{
+          document.getElementsByClassName("CPU-win")[0].style.cssText = "display: none;";
+          document.getElementsByClassName("user-win")[0].style.cssText = "display: none;";
+          document.getElementsByClassName("none-win")[0].style.cssText = "display: block;";
+       } 
+    }
+    
+    function CPU_MOVE(){
+      CPU_CHOICE = Math.floor(Math.random() * 3);
+      choiceImageToggle(CPU_CHOICE, 'c');
+      console.log("CPU Choice: ", CPU_CHOICE);  
+    }
+
+    function choiceImageToggle(userChoice, player){
+      var userClass= "";
+
+      if(player === "u")
+        userClass= "user-choice";
+      else{
+        userClass= "cpu-choice";
+      }
+
+      for(i=0; i<3; i++)
+      {
+        if(i===userChoice){
+          document.getElementsByClassName(userClass)[i].classList.remove("choice-none")
+          document.getElementsByClassName(userClass)[i].classList.add("chosen");
+        }else{
+          document.getElementsByClassName(userClass)[i].classList.remove("chosen")
+          document.getElementsByClassName(userClass)[i].classList.add("choice-none");
+        } 
+      }
+      
+    }
+
+    function getUserChoice(userChoice){
+      CPU_MOVE();
+      switch(userChoice) {
+          case 0:
+              choiceImageToggle(userChoice, 'u');
+              if(userChoice === CPU_CHOICE ){
+                decision_message("none");
+              }else if(CPU_CHOICE === 1){
+                decision_message("CPU");
+              }else if(CPU_CHOICE === 2){
+                decision_message("user");
+              }   
+              break;
+          case 1:
+              choiceImageToggle(userChoice, 'u');
+              if(userChoice > CPU_CHOICE){
+                decision_message("user");
+              }else if(userChoice < CPU_CHOICE){
+                decision_message("CPU");
+              }else if(userChoice === CPU_CHOICE){
+                decision_message("none");
+              }
+              break;
+          case 2:
+              choiceImageToggle(userChoice, 'u');
+              if(userChoice === CPU_CHOICE ){
+                decision_message("none");
+              }else if(CPU_CHOICE === 0){
+                decision_message("CPU");
+              }else if(CPU_CHOICE === 1){
+                decision_message("user");
+              }   
+              break;
+      }
+
+      console.log("User Choice: ", userChoice);
+    }
+  </script>
+</head>
+
+<body>
+  <h1 class="heading">Rock Paper Scissors</h1>
+  <div class="main-container">
+	  <div class="row-container">
+		  <div class="user-choice-container">
+			<h2>User</h2>
+			<img src="assets/rock.png" class="user-choice choice-none" onclick="getUserChoice(0)"><br>
+			<img src="assets/paper.png" class="user-choice choice-none" onclick="getUserChoice(1)"><br>
+			<img src="assets/scissors.png" class="user-choice choice-none" onclick="getUserChoice(2)">
+		  </div>
+		  <div class="CPU-choice-container">
+			<h2>CPU</h2>
+			<img src="assets/rock.png" class="cpu-choice choice-none"><br>
+			<img src="assets/paper.png" class="cpu-choice choice-none"><br>
+			<img src="assets/scissors.png" class="cpu-choice choice-none">
+		  </div>
+	  </div>
+  </div>
+  <div class="decision-container">
+    <h2 class="user-win"><strong>Result:</strong> User Wins</h2>
+    <h2 class="CPU-win"><strong>Result:</strong> CPU Wins</h2>
+	<h2 class="none-win"><strong>Result:</strong> DRAW</h2>
+  </div>
+</body>
+
+</html>
