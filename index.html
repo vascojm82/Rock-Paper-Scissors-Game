@@ -4,6 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <title>Rock Paper Scissors</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="plugins/soundmanager2.js"></script>
   <style>
 	#myVideo {
 	  position: fixed;
@@ -13,55 +17,117 @@
 	  min-height: 100%;
 	  z-index:-1;
 	}
+	
     body{
       color: #fff;
   	  text-shadow: 0px 1px 0px #999, 0px 2px 0px #888, 0px 3px 0px #777, 0px 4px 0px #666, 0px 5px 0px #555, 0px 6px 0px #444, 0px 7px 0px #333, 0px 8px 7px #001135;
   	  font: 'ChunkFiveRegular';
     }
-	.heading{
+	
+	#openingModal{
+	  color: #000;
+  	  text-shadow: none;
+  	  font: 'ChunkFiveRegular';
 	  text-align: center;
-	  margin-bottom: 50px;
 	}
+	
+	.title {
+	  text-align: center;
+	  -webkit-box-sizing: border-box;
+	  -moz-box-sizing: border-box;
+	  box-sizing: border-box;
+	  padding: 10px;
+	  border: none;
+	  font: normal 70px/normal "Warnes", Helvetica, sans-serif;
+	  text-decoration: normal;
+	  text-align: center;
+	  -o-text-overflow: clip;
+	  text-overflow: clip;
+	  white-space: pre;
+	  margin-bottom: 20px;
+	  -webkit-animation: neon2 1.5s ease-in-out infinite alternate;
+	  -moz-animation: neon2 1.5s ease-in-out infinite alternate;
+	  animation: neon2 1.5s ease-in-out infinite alternate;
+	}
+	
+	@-webkit-keyframes neon2 {
+	  from {
+		text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #228DFF, 0 0 70px #228DFF, 0 0 80px #228DFF, 0 0 100px #228DFF, 0 0 150px #228DFF;
+	  }
+	  to {
+		text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #228DFF, 0 0 35px #228DFF, 0 0 40px #228DFF, 0 0 50px #228DFF, 0 0 75px #228DFF;
+	  }
+	}
+
 	.main-container{
 		display: block;
 		width: 35%;
 		margin: auto;
-		padding-bottom:50px;
+		padding-bottom:20px;
 	}
+	
 	.row-container{
 		width: 63%;
 		margin: auto;
 	}
+	
     .user-win{
       display: none;
     }
+	
     .CPU-win{
       display: none;
     }
+	
     .none-win{
       display: none;
     }
+	
     .user-choice-container{
       display: inline-block;
     }
+	
     .CPU-choice-container{
       display: inline-block;
     }
+	
 	.user-choice-container h2, .CPU-choice-container h2{
 	  text-align: center;
+	  color: #fff;
+	  -webkit-animation: neon1 1.5s ease-in-out infinite alternate;
+	  -moz-animation: neon1 1.5s ease-in-out infinite alternate;
+	  animation: neon1 1.5s ease-in-out infinite alternate;
 	}
+	
+	@-webkit-keyframes neon1 {
+	  from {
+		text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #FF1177, 0 0 70px #FF1177, 0 0 80px #FF1177, 0 0 100px #FF1177, 0 0 150px #FF1177;
+	  }
+	  to {
+		text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #FF1177, 0 0 35px #FF1177, 0 0 40px #FF1177, 0 0 50px #FF1177, 0 0 75px #FF1177;
+	  }
+	}
+	
     .chosen{
       opacity: 1;
     }
+	
     .choice-none{
       opacity: 0.5;
     }
+	
     .decision-container{
       width: 100%;
     }
+	
     .decision-container h2{
       text-align: center;
+	  color: #fff;
+	  -webkit-animation: neon1 1.5s ease-in-out infinite alternate;
+	  -moz-animation: neon1 1.5s ease-in-out infinite alternate;
+	  animation: neon1 1.5s ease-in-out infinite alternate;
     }
+	
 	img{
 	  width: 90%;
 	}
@@ -114,105 +180,173 @@
 	/***************/
   </style>
   <script type="text/javascript">
-    var CPU_CHOICE = 0;
+  $(document).ready(function(){
+		var CPU_CHOICE = 0;
+		
+		var backgroundMusicObject = soundManager.createSound({
+		  url: "assets/prisoner_of_time.mp3",
+		  autoLoad: true,
+		  autoPlay: true,
+		  loops: 100
+		});
 
-    function decision_message(winner){
-       if(winner === "user"){
-          document.getElementsByClassName("user-win")[0].style.cssText = "display: block;";
-          document.getElementsByClassName("CPU-win")[0].style.cssText = "display: none;";
-          document.getElementsByClassName("none-win")[0].style.cssText = "display: none;";
-       }else if(winner === "CPU"){
-          document.getElementsByClassName("CPU-win")[0].style.cssText = "display: block;";
-          document.getElementsByClassName("user-win")[0].style.cssText = "display: none;";
-          document.getElementsByClassName("none-win")[0].style.cssText = "display: none;";
-       }else{
-          document.getElementsByClassName("CPU-win")[0].style.cssText = "display: none;";
-          document.getElementsByClassName("user-win")[0].style.cssText = "display: none;";
-          document.getElementsByClassName("none-win")[0].style.cssText = "display: block;";
-       }
-    }
+		backgroundMusicObject.stop();
+		backgroundMusicObject.setVolume(30);
+		
+		var navClickSoundObject = soundManager.createSound({
+		  url: "./assets/UI_2.mp3",
+		  autoLoad: true,
+		  autoPlay: true
+		})
 
-    function CPU_MOVE(){
-      CPU_CHOICE = Math.floor(Math.random() * 3);
-      choiceImageToggle(CPU_CHOICE, 'c');
-      console.log("CPU Choice: ", CPU_CHOICE);
-    }
+		navClickSoundObject.stop();
+		navClickSoundObject.setVolume(100);
+		
+		
+		$('.close-btn').click(function(){
+		  backgroundMusicObject.stop();
+		  backgroundMusicObject.play();
+		});
+		
+		$('#openingModal').modal('show');
 
-    function choiceImageToggle(userChoice, player){
-      var userClass= "";
+		function decision_message(winner){
+		   if(winner === "user"){
+			  document.getElementsByClassName("user-win")[0].style.cssText = "display: block;";
+			  document.getElementsByClassName("CPU-win")[0].style.cssText = "display: none;";
+			  document.getElementsByClassName("none-win")[0].style.cssText = "display: none;";
+		   }else if(winner === "CPU"){
+			  document.getElementsByClassName("CPU-win")[0].style.cssText = "display: block;";
+			  document.getElementsByClassName("user-win")[0].style.cssText = "display: none;";
+			  document.getElementsByClassName("none-win")[0].style.cssText = "display: none;";
+		   }else{
+			  document.getElementsByClassName("CPU-win")[0].style.cssText = "display: none;";
+			  document.getElementsByClassName("user-win")[0].style.cssText = "display: none;";
+			  document.getElementsByClassName("none-win")[0].style.cssText = "display: block;";
+		   }
+		}
 
-      if(player === "u")
-        userClass= "user-choice";
-      else{
-        userClass= "cpu-choice";
-      }
+		function CPU_MOVE(){
+		  CPU_CHOICE = Math.floor(Math.random() * 3);
+		  choiceImageToggle(CPU_CHOICE, 'c');
+		  console.log("CPU Choice: ", CPU_CHOICE);
+		}
 
-      for(i=0; i<3; i++)
-      {
-        if(i===userChoice){
-          document.getElementsByClassName(userClass)[i].classList.remove("choice-none")
-          document.getElementsByClassName(userClass)[i].classList.add("chosen");
-        }else{
-          document.getElementsByClassName(userClass)[i].classList.remove("chosen")
-          document.getElementsByClassName(userClass)[i].classList.add("choice-none");
-        }
-      }
+		function choiceImageToggle(userChoice, player){
+		  var userClass= "";
 
-    }
+		  if(player === "u")
+			userClass= "user-choice";
+		  else{
+			userClass= "cpu-choice";
+		  }
 
-    function getUserChoice(userChoice){
-      CPU_MOVE();
-      switch(userChoice) {
-          case 0:
-              choiceImageToggle(userChoice, 'u');
-              if(userChoice === CPU_CHOICE ){
-                decision_message("none");
-              }else if(CPU_CHOICE === 1){
-                decision_message("CPU");
-              }else if(CPU_CHOICE === 2){
-                decision_message("user");
-              }
-              break;
-          case 1:
-              choiceImageToggle(userChoice, 'u');
-              if(userChoice > CPU_CHOICE){
-                decision_message("user");
-              }else if(userChoice < CPU_CHOICE){
-                decision_message("CPU");
-              }else if(userChoice === CPU_CHOICE){
-                decision_message("none");
-              }
-              break;
-          case 2:
-              choiceImageToggle(userChoice, 'u');
-              if(userChoice === CPU_CHOICE ){
-                decision_message("none");
-              }else if(CPU_CHOICE === 0){
-                decision_message("CPU");
-              }else if(CPU_CHOICE === 1){
-                decision_message("user");
-              }
-              break;
-      }
+		  for(i=0; i<3; i++)
+		  {
+			if(i===userChoice){
+			  document.getElementsByClassName(userClass)[i].classList.remove("choice-none")
+			  document.getElementsByClassName(userClass)[i].classList.add("chosen");
+			}else{
+			  document.getElementsByClassName(userClass)[i].classList.remove("chosen")
+			  document.getElementsByClassName(userClass)[i].classList.add("choice-none");
+			}
+		  }
 
-      console.log("User Choice: ", userChoice);
-    }
+		}
+
+		function getUserChoice(userChoice){
+		  CPU_MOVE();
+		  switch(userChoice) {
+			  case 0:
+				  choiceImageToggle(userChoice, 'u');
+				  if(userChoice === CPU_CHOICE ){
+					decision_message("none");
+				  }else if(CPU_CHOICE === 1){
+					decision_message("CPU");
+				  }else if(CPU_CHOICE === 2){
+					decision_message("user");
+				  }
+				  break;
+			  case 1:
+				  choiceImageToggle(userChoice, 'u');
+				  if(userChoice > CPU_CHOICE){
+					decision_message("user");
+				  }else if(userChoice < CPU_CHOICE){
+					decision_message("CPU");
+				  }else if(userChoice === CPU_CHOICE){
+					decision_message("none");
+				  }
+				  break;
+			  case 2:
+				  choiceImageToggle(userChoice, 'u');
+				  if(userChoice === CPU_CHOICE ){
+					decision_message("none");
+				  }else if(CPU_CHOICE === 0){
+					decision_message("CPU");
+				  }else if(CPU_CHOICE === 1){
+					decision_message("user");
+				  }
+				  break;
+		  }
+
+		  console.log("User Choice: ", userChoice);
+		}
+		
+		$('.rock').click(function(){
+			navClickSoundObject.stop();
+		    navClickSoundObject.play();
+			getUserChoice(0);
+		});
+		
+		$('.paper').click(function(){
+			navClickSoundObject.stop();
+			navClickSoundObject.play();
+			getUserChoice(1);
+		});
+		
+		$('.scissors').click(function(){
+			navClickSoundObject.stop();
+			navClickSoundObject.play();
+			getUserChoice(2);
+		});
+	})
   </script>
 </head>
 
 <body>
+	<!-- Opening Modal -->
+    <div class="modal fade" id="openingModal" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title" id="openingModalTitle">Welcome to my Rock Paper Scissors Game</h2>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <h4>This app will let you play Rock Paper Scissors against the CPU</h4>
+            <h4>Give it a try !</h4>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary close-btn" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!------------------------->
   <video autoplay muted loop id="myVideo">
     <source src="assets/animated_background.mp4" type="video/mp4">
     Your browser does not support HTML5 video.
   </video>
-  <h1 class="heading">Rock Paper Scissors</h1>
+  <h1 class="title">Rock Paper Scissors</h1>
   <div class="main-container">
 	  <div class="row-container">
 		  <div class="user-choice-container">
 			<h2>User</h2>
-			<img src="assets/rock.png" class="user-choice choice-none" onclick="getUserChoice(0)"><br>
-			<img src="assets/paper.png" class="user-choice choice-none" onclick="getUserChoice(1)"><br>
-			<img src="assets/scissors.png" class="user-choice choice-none" onclick="getUserChoice(2)">
+			<img src="assets/rock.png" class="user-choice choice-none rock"><br>
+			<img src="assets/paper.png" class="user-choice choice-none paper"><br>
+			<img src="assets/scissors.png" class="user-choice choice-none scissors">
 		  </div>
 		  <div class="CPU-choice-container">
 			<h2>CPU</h2>
